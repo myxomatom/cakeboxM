@@ -35,12 +35,15 @@ if(isset($_POST['rename']))
 	$new_names = array_reverse($_POST['newNames']);
 	foreach($files as $file)
 	{
-		// On rajoute "/downloads" devant le nom des dossiers
-		if(is_dir(LOCAL_DL_PATH.'/'.$file))  $file = LOCAL_DL_PATH.'/'.$file;
-		$dirname = @pathinfo($file, PATHINFO_DIRNAME) . '/';
-		$newname = $dirname . $new_names[$i];
-		@rename($file,$newname);
-		$i++;		
+		if ($new_names[$i] != "")
+		{
+			// On rajoute "/downloads" devant le nom des dossiers
+			if(is_dir(LOCAL_DL_PATH.'/'.$file))  $file = LOCAL_DL_PATH.'/'.$file;
+			$dirname = @pathinfo($file, PATHINFO_DIRNAME) . '/';
+			$newname = $dirname . $new_names[$i];
+			@rename($file,$newname);
+			$i++;
+		}		
 	}
 }
 
