@@ -204,7 +204,7 @@ function print_tree_structure($treestructure, $editmode = FALSE, $father = "")
       $dir = dirname($fullkey);
       echo '<div class="onedir">';
 
-      if ($editmode) echo '<input name="Files[]" id="Files" directory="' . $dir . '" type="checkbox" value="'.$father.htmlspecialchars($key).'" onclick="CheckLikes(this);" />';
+      if ($editmode) echo '<input name="Files[]" id="Files"  type="checkbox" value="'.$father.htmlspecialchars($key).'" onclick="CheckLikes(this);" />';
 
       echo '
       	  <img src="ressources/'.showLastAddFolder($fullkey).'" class="pointerLink imgfolder" onclick="showhidedir(\''.$key.'\'); return false;" />
@@ -222,7 +222,7 @@ function print_tree_structure($treestructure, $editmode = FALSE, $father = "")
       echo '<div style="margin-bottom:5px;" class="onefile" id="div-'.htmlspecialchars($file).'">';
 
       // La checkbox de l'editmode
-      if($editmode) echo '<input name="Files[]" id="Files" directory="' . $pathInfo['dirname'] . '/'. '" type="checkbox" value="'.htmlspecialchars($file).'"/>';
+      if($editmode) echo '<input name="Files[]" id="Files" type="checkbox" value="'.htmlspecialchars($file).'"/>';
 
       // Affichage des images à gauche du titre (Direct Download + Watch)
       echo '<a href="'.DOWNLOAD_LINK.$file.'" download="'.$pathInfo['basename'].'">';

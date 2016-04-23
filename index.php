@@ -1,8 +1,8 @@
-﻿<?php
+<?php
 
 require_once('inc/lang.inc.php');
 require_once('inc/functions.inc.php');
-
+echo mb_internal_encoding();
 // Get the editmode status
 $editmode = (EDITMODE_ENABLE && isset($_GET['editmode'])) ? TRUE:FALSE;
 
@@ -32,32 +32,15 @@ if(isset($_POST['rename']))
 {
 	$i = 0;
 	$files = array_reverse($_POST['Files']);
-	var_dump($_POST['Files']);
-	var_dump($_POST['oldNames']);
-	var_dump($_POST['newNames']);
-	$dossier_mod = array();
-	foreach($Files as $file)
+	$new_names = array_reverse($_POST['newNames']);
+	foreach($files as $file)
 	{
 		// On rajoute "/downloads" devant le nom des dossiers
-		if(is_dir(LOCAL_DL_PATH.'/'.$file)) 
-		{	
-			$file = LOCAL_DL_PATH.'/'.$file;
-			$new_dir = @pathinfo($file, PATHINFO_DIRNAME) . '/' . $_POST['newNames'][$i];
-			$dossier_mod[$file] = $new_dir ;
-		}
+		if(is_dir(LOCAL_DL_PATH.'/'.$file))  $file = LOCAL_DL_PATH.'/'.$file;
 		$dirname = @pathinfo($file, PATHINFO_DIRNAME) . '/';
-		if (!is_dir($dirname))
-		{		
-			var_dump($dossier_mod);
-			$dirname = $dossier_mod[$dirname];
-			$newname = $dirname . $_POST['newNames'][$i];
-		}
-		else
-		{
-			$newname = $dirname . $_POST['newNames'][$i];
-		}
+		$newname = $dirname . $new_names[$i];
 		@rename($file,$newname);
-		$i++;
+		$i++;		
 	}
 }
 
@@ -85,7 +68,7 @@ if(isset($_GET['ignore_update']))
 }
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta name="robots" content="noindex"/>
     <title>Stream - <?php echo $lang[LOCAL_LANG]['index_title']; ?></title>
@@ -216,7 +199,7 @@ if(isset($_GET['ignore_update']))
         </div>
     </footer>
     <!-- / FOOTER -->
-    <script type="text/javascript" src="ressources/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
     <script type="text/javascript" src="ressources/rename_file.js"></script>
 </body>
 </html>
