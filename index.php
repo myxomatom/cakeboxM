@@ -27,6 +27,40 @@ if(isset($_POST['move']))
 	}
 }
 
+// Request : RENAME FILES
+if(isset($_POST['rename']))
+{
+	$i = 0;
+	$files = array_reverse($_POST['Files']);
+	var_dump($_POST['Files']);
+	var_dump($_POST['oldNames']);
+	var_dump($_POST['newNames']);
+	$dossier_mod = array();
+	foreach($Files as $file)
+	{
+		// On rajoute "/downloads" devant le nom des dossiers
+		if(is_dir(LOCAL_DL_PATH.'/'.$file)) 
+		{	
+			$file = LOCAL_DL_PATH.'/'.$file;
+			$new_dir = @pathinfo($file, PATHINFO_DIRNAME) . '/' . $_POST['newNames'][$i];
+			$dossier_mod[$file] = $new_dir ;
+		}
+		$dirname = @pathinfo($file, PATHINFO_DIRNAME) . '/';
+		if (!is_dir($dirname))
+		{		
+			var_dump($dossier_mod);
+			$dirname = $dossier_mod[$dirname];
+			$newname = $dirname . $_POST['newNames'][$i];
+		}
+		else
+		{
+			$newname = $dirname . $_POST['newNames'][$i];
+		}
+		@rename($file,$newname);
+		$i++;
+	}
+}
+
 // Request : CREATE DIR
 if(isset($_POST['mkdir']) && !empty($_POST['mkdir_name']))
 {
@@ -70,7 +104,7 @@ if(isset($_GET['ignore_update']))
 					<span class="first">Cake</span>
 					<span class="second">Box</span>
 					<?php
-						$name = $_SERVER['PHP_AUTH_USER'];
+						$name = isset($_SERVER['PHP_AUTH_USER']) ? $_SERVER['PHP_AUTH_USER'] : "Global" ;
 						echo $name;
 					?>
 				</a>
@@ -112,7 +146,7 @@ if(isset($_GET['ignore_update']))
 				// Open form for editmode
 				if($editmode):
 			?>
-				<form name="editform" action="index.php?editmode" method="post">
+				<form id ="editform" name="editform" action="index.php?editmode" method="post">
 			<?php endif; ?>
 			
 			
@@ -162,6 +196,14 @@ if(isset($_GET['ignore_update']))
 				</p>
 				<!-- / Delete dir&file form-->
 
+				<!-- Rename dir&file form-->
+				<p>
+					<?php echo $lang[LOCAL_LANG]['rename_dir']; ?>
+					<input type="button" value="<?php echo $lang[LOCAL_LANG]['rename_button']; ?>" onclick="rename()"/>
+					<div id="new_names_list"></div>
+				</p>
+				<!-- / Rename dir&file form-->
+
 			</div>
 			</form>
 			<?php endif;  ?>
@@ -174,5 +216,7 @@ if(isset($_GET['ignore_update']))
         </div>
     </footer>
     <!-- / FOOTER -->
+    <script type="text/javascript" src="ressources/jquery.min.js"></script>
+    <script type="text/javascript" src="ressources/rename_file.js"></script>
 </body>
 </html>

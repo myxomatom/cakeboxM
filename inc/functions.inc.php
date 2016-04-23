@@ -201,9 +201,10 @@ function print_tree_structure($treestructure, $editmode = FALSE, $father = "")
     {
       $fullkey = $key;
       $key = addslashes(basename($key));
+      $dir = dirname($fullkey);
       echo '<div class="onedir">';
 
-      if ($editmode) echo '<input name="Files[]" id="Files" type="checkbox" value="'.$father.htmlspecialchars($key).'" onclick="CheckLikes(this);" />';
+      if ($editmode) echo '<input name="Files[]" id="Files" directory="' . $dir . '" type="checkbox" value="'.$father.htmlspecialchars($key).'" onclick="CheckLikes(this);" />';
 
       echo '
       	  <img src="ressources/'.showLastAddFolder($fullkey).'" class="pointerLink imgfolder" onclick="showhidedir(\''.$key.'\'); return false;" />
@@ -221,7 +222,7 @@ function print_tree_structure($treestructure, $editmode = FALSE, $father = "")
       echo '<div style="margin-bottom:5px;" class="onefile" id="div-'.htmlspecialchars($file).'">';
 
       // La checkbox de l'editmode
-      if($editmode) echo '<input name="Files[]" id="Files" type="checkbox" value="'.htmlspecialchars($file).'"/>';
+      if($editmode) echo '<input name="Files[]" id="Files" directory="' . $pathInfo['dirname'] . '/'. '" type="checkbox" value="'.htmlspecialchars($file).'"/>';
 
       // Affichage des images à gauche du titre (Direct Download + Watch)
       echo '<a href="'.DOWNLOAD_LINK.$file.'" download="'.$pathInfo['basename'].'">';
@@ -365,6 +366,9 @@ function get_nextnprev($file)
  */
 function check_update()
 {
+  /*
+  *Fonction de mise à jour désactivée temporairement
+
   $last_check = fileatime('version.txt');
   $time_since = time()-$last_check;
 
@@ -392,6 +396,8 @@ function check_update()
     }
 
   } else return array();
+
+  */
 }
 
 /*
@@ -467,6 +473,11 @@ function detect_OS()
   $ua = $_SERVER["HTTP_USER_AGENT"];
   if(strpos($ua, 'Macintosh')) return "OSX";
   else return "Linux-Windows-others";
+}
+
+function rename_file($file, $new_name)
+{
+
 }
 
 ?>
