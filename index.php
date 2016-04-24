@@ -1,8 +1,9 @@
 <?php
-
+include("test-charset.php");
 require_once('inc/lang.inc.php');
 require_once('inc/functions.inc.php');
-echo mb_internal_encoding();
+
+
 // Get the editmode status
 $editmode = (EDITMODE_ENABLE && isset($_GET['editmode'])) ? TRUE:FALSE;
 
@@ -41,6 +42,8 @@ if(isset($_POST['rename']))
 			if(is_dir(LOCAL_DL_PATH.'/'.$file))  $file = LOCAL_DL_PATH.'/'.$file;
 			$dirname = @pathinfo($file, PATHINFO_DIRNAME) . '/';
 			$newname = $dirname . $new_names[$i];
+			$file = mb_convert_encoding($file , INTERNAL_ENCODE , FS_ENCODE);
+			$newname = mb_convert_encoding($newname , INTERNAL_ENCODE , FS_ENCODE);
 			@rename($file,$newname);
 			$i++;
 		}		
@@ -50,7 +53,9 @@ if(isset($_POST['rename']))
 // Request : CREATE DIR
 if(isset($_POST['mkdir']) && !empty($_POST['mkdir_name']))
 {
-	mkdir($_POST['mkdirSelect']."/".$_POST['mkdir_name'],0777);
+	$dirSelect = mb_convert_encoding($_POST['mkdirSelect'] , INTERNAL_ENCODE , FS_ENCODE);
+	$dirName = mb_convert_encoding($_POST['mkdir_name'] , INTERNAL_ENCODE , FS_ENCODE);
+	mkdir($dirSelect."/".$dirName,0777);
 }
 
 // Request : DO UPDATE

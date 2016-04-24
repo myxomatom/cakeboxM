@@ -70,6 +70,7 @@ function isVideoFile($path)
  */
 function get_file_icon($filename)
 {
+  $filename = mb_convert_encoding($filename , 'ISO-8859-1' , 'UTF-8' );
   $extension = pathinfo($filename, PATHINFO_EXTENSION);
 
   if($extension == "avi" || $extension == "mpeg" || $extension == "mp4" || $extension == "AVI" || $extension == "mkv") $extension = "avi";
@@ -86,6 +87,7 @@ function get_file_icon($filename)
  */
 function getFileSize($filePath)
 {
+    $filePath = mb_convert_encoding($filePath , 'ISO-8859-1' , 'UTF-8' );
      $fs = filesize($filePath);
 
      if ($fs >= 1073741824)
@@ -106,6 +108,7 @@ function getFileSize($filePath)
  **/
 function showLastAdd($file)
 {
+    $file = mb_convert_encoding($file , 'ISO-8859-1' , 'UTF-8' );
      if ( LAST_ADD && ((date('U') - filemtime($file)) / 3600) <= TIME_LAST_ADD)
        echo '<img src="ressources/new.png" title="Nouveau fichier !" /> &nbsp;';
 }
@@ -142,6 +145,7 @@ function recursive_directory_tree($directory = null)
         //Scan the directory and loop through the results
         foreach(scandir($directory) as $file) {
 
+            $file = mb_convert_encoding($file  , 'UTF-8', 'ISO-8859-1' );
             //. = current directory, .. = up one level. We want to ignore both.
             if ($file[0] == "." && !DISPLAY_HIDDEN_FILESDIRS) {
                 continue;
@@ -188,7 +192,7 @@ function print_tree_structure($treestructure, $editmode = FALSE, $father = "")
 
   if (empty($treestructure))
   {
-	  echo '<div style="margin-bottom:5px;" class="onefile" id="div-'.htmlspecialchars($file).'">';
+	  echo '<div style="margin-bottom:5px;" class="onefile" id="div-empty">';
 	  echo $lang[LOCAL_LANG]['empty_dir'];
 	  echo '</div>';
 	  return;
@@ -243,13 +247,14 @@ function print_tree_structure($treestructure, $editmode = FALSE, $father = "")
       }
       else
           echo basename(htmlspecialchars($file));
+          $file_conv = mb_convert_encoding($file , 'ISO-8859-1' , 'UTF-8' );
 
       // Création de l'infobulle
       echo '<a href="#" class="tooltip">&nbsp;(?)
       		<span>
               '.$lang[LOCAL_LANG]['size'].' : '.getFilesize($file).'<br/>
-              '.$lang[LOCAL_LANG]['last_update'].' : '.date("d F Y, H:i",filemtime($file)).'<br/>
-              '.$lang[LOCAL_LANG]['last_access'].' : '.date("d F Y, H:i",fileatime($file)).'<br/>
+              '.$lang[LOCAL_LANG]['last_update'].' : '.date("d F Y, H:i",filemtime($file_conv)).'<br/>
+              '.$lang[LOCAL_LANG]['last_access'].' : '.date("d F Y, H:i",fileatime($file_conv)).'<br/>
             </span>
             </a>';
 
@@ -473,11 +478,6 @@ function detect_OS()
   $ua = $_SERVER["HTTP_USER_AGENT"];
   if(strpos($ua, 'Macintosh')) return "OSX";
   else return "Linux-Windows-others";
-}
-
-function rename_file($file, $new_name)
-{
-
 }
 
 ?>
