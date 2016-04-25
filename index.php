@@ -12,8 +12,9 @@ if(isset($_POST['delete']))
 {
 	foreach($_POST['Files'] as $file)
 	{
-		if(is_dir(LOCAL_DL_PATH.'/'.$file)) @rrmdir(LOCAL_DL_PATH.'/'.$file);
-		else @unlink($file);
+		$file_enc = mb_convert_encoding($file , INTERNAL_ENCODE , FS_ENCODE);
+		if(is_dir(LOCAL_DL_PATH.'/'.$file_enc)) @rrmdir(LOCAL_DL_PATH.'/'.$file);
+		else @unlink($file_enc);
 	}
 }
 
@@ -22,9 +23,12 @@ if(isset($_POST['move']))
 {
 	foreach($_POST['Files'] as $file)
 	{
+		$file_enc = mb_convert_encoding($file , INTERNAL_ENCODE , FS_ENCODE);
+		$dest_file = $_POST['moveSelect']."/".basename($file);
+		$dest_file_enc = mb_convert_encoding($dest_file , INTERNAL_ENCODE , FS_ENCODE);
 		// On rajoute "/downloads" devant le nom des dossiers
-		if(is_dir(LOCAL_DL_PATH.'/'.$file)) $file = LOCAL_DL_PATH.'/'.$file;
-		@rename($file,$_POST['moveSelect']."/".basename($file));
+		if(is_dir(LOCAL_DL_PATH.'/'.$file_enc)) $file_enc = LOCAL_DL_PATH.'/'.$file_enc;
+		@rename($file_enc,$dest_file_enc);
 	}
 }
 
@@ -34,19 +38,22 @@ if(isset($_POST['rename']))
 	$i = 0;
 	$files = array_reverse($_POST['Files']);
 	$new_names = array_reverse($_POST['newNames']);
+	var_dump($new_names);
 	foreach($files as $file)
 	{
 		if ($new_names[$i] != "")
 		{
+			$file_enc = mb_convert_encoding($file , INTERNAL_ENCODE , FS_ENCODE);
 			// On rajoute "/downloads" devant le nom des dossiers
-			if(is_dir(LOCAL_DL_PATH.'/'.$file))  $file = LOCAL_DL_PATH.'/'.$file;
+			if(is_dir(LOCAL_DL_PATH.'/'.$file_enc))  $file = LOCAL_DL_PATH.'/'.$file;
 			$dirname = @pathinfo($file, PATHINFO_DIRNAME) . '/';
 			$newname = $dirname . $new_names[$i];
-			$file = mb_convert_encoding($file , INTERNAL_ENCODE , FS_ENCODE);
+			$file = mb_convert_encoding($file ,INTERNAL_ENCODE , FS_ENCODE);
 			$newname = mb_convert_encoding($newname , INTERNAL_ENCODE , FS_ENCODE);
+			echo "ancien nom : $file      nouveau nom : $newname";
 			@rename($file,$newname);
-			$i++;
-		}		
+		}
+		$i++;		
 	}
 }
 
@@ -162,7 +169,9 @@ if(isset($_GET['ignore_update']))
 					<?php echo $lang[LOCAL_LANG]['create_new_dir']; ?>
 					<select name="mkdirSelect">
 						<option value="<?php echo LOCAL_DL_PATH; ?>">/</option>
-						<?php foreach($listof_dir as $dir) { echo '<option value="'.$dir.'">'.ustr_replace(LOCAL_DL_PATH,"",$dir).'</option>'; } ?>
+						<?php foreach($listof_dir as $dir) { 
+							$dir = mb_convert_encoding($dir, FS_ENCODE);
+							echo '<option value="'.$dir.'">'.ustr_replace(LOCAL_DL_PATH,"",$dir).'</option>'; } ?>
 					</select>
 					<input type="text" value="<?php echo $lang[LOCAL_LANG]['name_new_dir'];?>" onblur="if(this.value=='') this.value='<?php echo $lang[LOCAL_LANG]['name_new_dir'];?>'" onclick="if(this.value=='<?php echo $lang[LOCAL_LANG]['name_new_dir'];?>') this.value='';" name="mkdir_name"/>
 					<input type="submit" value="<?php echo $lang[LOCAL_LANG]['create_new_dir_button']; ?>" name="mkdir"/>
@@ -174,7 +183,9 @@ if(isset($_GET['ignore_update']))
 					<?php echo $lang[LOCAL_LANG]['move_dir']; ?>
 					<select name="moveSelect">
 						<option value="<?php echo LOCAL_DL_PATH; ?>">/</option>
-						<?php foreach($listof_dir as $dir) { echo '<option value="'.$dir.'">'.ustr_replace(LOCAL_DL_PATH,"",$dir).'</option>'; } ?>
+						<?php foreach($listof_dir as $dir)
+							{	$dir = mb_convert_encoding($dir, FS_ENCODE);
+						  echo '<option value="'.$dir.'">'.ustr_replace(LOCAL_DL_PATH,"",$dir).'</option>'; } ?>
 					</select>
 					<input type="submit" value="<?php echo $lang[LOCAL_LANG]['move_dir_button']; ?>" name="move"/>
 				</p>

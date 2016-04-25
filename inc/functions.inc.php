@@ -70,7 +70,7 @@ function isVideoFile($path)
  */
 function get_file_icon($filename)
 {
-  $filename = mb_convert_encoding($filename , 'ISO-8859-1' , 'UTF-8' );
+  $filename = mb_convert_encoding($filename , INTERNAL_ENCODE , FS_ENCODE );
   $extension = pathinfo($filename, PATHINFO_EXTENSION);
 
   if($extension == "avi" || $extension == "mpeg" || $extension == "mp4" || $extension == "AVI" || $extension == "mkv") $extension = "avi";
@@ -87,7 +87,7 @@ function get_file_icon($filename)
  */
 function getFileSize($filePath)
 {
-    $filePath = mb_convert_encoding($filePath , 'ISO-8859-1' , 'UTF-8' );
+   // $filePath = mb_convert_encoding($filePath , INTERNAL_ENCODE , FS_ENCODE );
      $fs = filesize($filePath);
 
      if ($fs >= 1073741824)
@@ -108,12 +108,13 @@ function getFileSize($filePath)
  **/
 function showLastAdd($file)
 {
-    $file = mb_convert_encoding($file , 'ISO-8859-1' , 'UTF-8' );
-     if ( LAST_ADD && ((date('U') - filemtime($file)) / 3600) <= TIME_LAST_ADD)
+   // $file = mb_convert_encoding($file , INTERNAL_ENCODE , FS_ENCODE );
+    if ( LAST_ADD && ((date('U') - filemtime($file)) / 3600) <= TIME_LAST_ADD)
        echo '<img src="ressources/new.png" title="Nouveau fichier !" /> &nbsp;';
 }
 function showLastAddFolder($key)
 {
+  //$key = mb_convert_encoding($key , INTERNAL_ENCODE , FS_ENCODE );
   $stat = stat($key);
   if (LAST_ADD && ((date('U') - $stat['mtime']) / 3600) <= TIME_LAST_ADD)
     return 'folder_new.png';
@@ -133,6 +134,7 @@ function recursive_directory_tree($directory = null)
     //If $directory is null, set $directory to the current working directory.
     if ($directory == null) {
         $directory = getcwd();
+
     }
 
     //declare the array to return
@@ -140,12 +142,12 @@ function recursive_directory_tree($directory = null)
 
     //Check if the argument specified is an array
     if (is_dir($directory)) {
-
         array_push($listof_dir,$directory);
         //Scan the directory and loop through the results
         foreach(scandir($directory) as $file) {
+            
+            $file = mb_convert_encoding($file  , FS_ENCODE, INTERNAL_ENCODE );
 
-            $file = mb_convert_encoding($file  , 'UTF-8', 'ISO-8859-1' );
             //. = current directory, .. = up one level. We want to ignore both.
             if ($file[0] == "." && !DISPLAY_HIDDEN_FILESDIRS) {
                 continue;
@@ -158,8 +160,11 @@ function recursive_directory_tree($directory = null)
 
             //Check if the current $file is a directory itself.
             //The appending of $directory is necessary here.
+
+            $file = mb_convert_encoding($file , INTERNAL_ENCODE , FS_ENCODE );
             if (is_dir($directory."/".$file))
             {
+                //$file = mb_convert_encoding($file , FS_ENCODE , INTERNAL_ENCODE  );
                 //Create a new array with an index of the folder name.
                 $return[$directory."/".$file] = recursive_directory_tree($directory."/".$file);
             }
@@ -201,9 +206,12 @@ function print_tree_structure($treestructure, $editmode = FALSE, $father = "")
   foreach($treestructure as $key => $file)
   {
     // Si on est sur un dossier
+
     if(is_array($file))
     {
+
       $fullkey = $key;
+      $key = mb_convert_encoding($key , FS_ENCODE , INTERNAL_ENCODE  );
       $key = addslashes(basename($key));
       $dir = dirname($fullkey);
       echo '<div class="onedir">';
@@ -222,14 +230,16 @@ function print_tree_structure($treestructure, $editmode = FALSE, $father = "")
     else
     {
       $pathInfo = pathinfo($file);
+      $file_enc = mb_convert_encoding($file , FS_ENCODE , INTERNAL_ENCODE);
+      $path_enc = mb_convert_encoding($pathInfo['basename'] , FS_ENCODE , INTERNAL_ENCODE);
 
-      echo '<div style="margin-bottom:5px;" class="onefile" id="div-'.htmlspecialchars($file).'">';
+      echo '<div style="margin-bottom:5px;" class="onefile" id="div-'.$file_enc.'">';
 
       // La checkbox de l'editmode
-      if($editmode) echo '<input name="Files[]" id="Files" type="checkbox" value="'.htmlspecialchars($file).'"/>';
+      if($editmode) echo '<input name="Files[]" id="Files" type="checkbox" value="'.$file_enc.'"/>';
 
       // Affichage des images à gauche du titre (Direct Download + Watch)
-      echo '<a href="'.DOWNLOAD_LINK.$file.'" download="'.$pathInfo['basename'].'">';
+      echo '<a href="'.DOWNLOAD_LINK.$file_enc.'" download="'.$pathInfo['basename'].'">';
         echo '<img src="ressources/download.png" title="Download this file" /> &nbsp;';
       echo '</a>';
 
@@ -246,15 +256,17 @@ function print_tree_structure($treestructure, $editmode = FALSE, $father = "")
 	      echo '</span>';
       }
       else
-          echo basename(htmlspecialchars($file));
-          $file_conv = mb_convert_encoding($file , 'ISO-8859-1' , 'UTF-8' );
+          $file_conv = mb_convert_encoding($file , FS_ENCODE , INTERNAL_ENCODE );
+          echo basename($file_conv);
+          
 
       // Création de l'infobulle
+
       echo '<a href="#" class="tooltip">&nbsp;(?)
       		<span>
               '.$lang[LOCAL_LANG]['size'].' : '.getFilesize($file).'<br/>
-              '.$lang[LOCAL_LANG]['last_update'].' : '.date("d F Y, H:i",filemtime($file_conv)).'<br/>
-              '.$lang[LOCAL_LANG]['last_access'].' : '.date("d F Y, H:i",fileatime($file_conv)).'<br/>
+              '.$lang[LOCAL_LANG]['last_update'].' : '.date("d F Y, H:i",filemtime($file)).'<br/>
+              '.$lang[LOCAL_LANG]['last_access'].' : '.date("d F Y, H:i",fileatime($file)).'<br/>
             </span>
             </a>';
 
