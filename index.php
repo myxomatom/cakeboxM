@@ -13,7 +13,10 @@ if(isset($_POST['delete']))
 	foreach($_POST['Files'] as $file)
 	{
 		$file_enc = mb_convert_encoding($file , INTERNAL_ENCODE , FS_ENCODE);
-		if(is_dir(LOCAL_DL_PATH.'/'.$file_enc)) @rrmdir(LOCAL_DL_PATH.'/'.$file);
+		if(is_dir(LOCAL_DL_PATH.'/'.$file_enc)) 
+		{
+				@rrmdir(LOCAL_DL_PATH.'/'.$file);
+		}
 		else @unlink($file_enc);
 	}
 }
@@ -38,7 +41,7 @@ if(isset($_POST['rename']))
 	$i = 0;
 	$files = array_reverse($_POST['Files']);
 	$new_names = array_reverse($_POST['newNames']);
-	var_dump($new_names);
+
 	foreach($files as $file)
 	{
 		if ($new_names[$i] != "")
@@ -50,7 +53,6 @@ if(isset($_POST['rename']))
 			$newname = $dirname . $new_names[$i];
 			$file = mb_convert_encoding($file ,INTERNAL_ENCODE , FS_ENCODE);
 			$newname = mb_convert_encoding($newname , INTERNAL_ENCODE , FS_ENCODE);
-			echo "ancien nom : $file      nouveau nom : $newname";
 			@rename($file,$newname);
 		}
 		$i++;		

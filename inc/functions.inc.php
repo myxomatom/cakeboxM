@@ -282,17 +282,24 @@ function print_tree_structure($treestructure, $editmode = FALSE, $father = "")
  */
  function rrmdir($dir)
  {
-   if (is_dir($dir)) {
-     $objects = scandir($dir);
-     foreach ($objects as $object) {
-       if ($object != "." && $object != "..") {
-         if (filetype($dir."/".$object) == "dir") rrmdir($dir."/".$object); else unlink($dir."/".$object);
-       }
-     }
+
+    $dir_enc = mb_convert_encoding($dir , INTERNAL_ENCODE , FS_ENCODE);
+      if (is_dir($dir_enc)) 
+      {
+        $objects = scandir($dir_enc);
+        foreach ($objects as $object) 
+        {
+          if ($object != "." && $object != "..") 
+          {
+            $obj_enc = mb_convert_encoding($object , INTERNAL_ENCODE , FS_ENCODE);
+            if (filetype($dir_enc."/".$obj_enc) == "dir") rrmdir($dir_enc."/".$obj_enc); else unlink($dir_enc."/".$object_enc);
+          }
+        }
      reset($objects);
-     rmdir($dir);
-   }
- }
+     rmdir($dir_enc);
+      }
+    
+  }
 
 /*
 *  Fonction str_replace() qui ne remplace qu'une occurence

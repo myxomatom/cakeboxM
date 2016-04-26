@@ -1,5 +1,5 @@
 <?php
-
+include("inc/test-charset.php");
 require('inc/lang.inc.php');
 require('inc/functions.inc.php');
 
