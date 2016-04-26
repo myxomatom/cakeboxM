@@ -1,3 +1,3 @@
 1.1
-Traitement de fichiers avec caractères spéciaux.
+Traitement de fichiers avec caracteres speciaux.
 Ajout de la fonction permettant le renommage des fichiers.
