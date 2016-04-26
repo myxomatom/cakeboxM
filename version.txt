@@ -1,3 +1,5 @@
 1.1
-Traitement de fichiers avec caracteres speciaux.
-Ajout de la fonction permettant le renommage des fichiers.
+Ajout de la fonction permettant de renommer les fichiers et dossiers
+Modification permettant la gestion des fichiers et dossiers contenant des caracteres speciaux
+ATTENTION LE SYSTEME DE MISE A JOUR AUTO N EST PAS ENCORE FONCTIONNEL
+VEUILLEZ FAIRE LA MISE A JOUR EN FAISANT UN GIT CLONE

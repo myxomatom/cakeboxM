@@ -434,7 +434,7 @@ function show_update($update_info)
     echo '<div id="update">';
     echo "<h3>".$lang[LOCAL_LANG]['new_version']." : v$current_version !</h3>";
     echo '<ul>';
-    foreach($description_update as $change) echo "<li>$change;</li>";
+    foreach($description_update as $change) if ($change!="") echo "<li>$change;</li>";
     echo '</ul>';
     echo '<a href="index.php?do_update" class="do_update">'.$lang[LOCAL_LANG]['click_here_update'].' !</a> <br />';
     echo '<a href="index.php?ignore_update&number='.$current_version.'" class="do_update">'.$lang[LOCAL_LANG]['ignore_update'].' !</a> <br />';
@@ -466,6 +466,7 @@ function do_update($force)
 
     // Extract "/dir/of/web/server" from "/dir/of/web/server/cakebox"
     $update_dir = escapeshellarg(substr(getcwd(),0,strpos(getcwd(),"/cakebox")));
+    echo($update_dir);
     exec("bash scripts/patch_update $update_dir");
     sleep(1); // let time before redirection
     header('Location:index.php?update_done');
