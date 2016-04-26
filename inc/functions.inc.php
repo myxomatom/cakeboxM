@@ -390,8 +390,6 @@ function get_nextnprev($file)
  */
 function check_update()
 {
-  /*
-  *Fonction de mise à jour désactivée temporairement
 
   $last_check = fileatime('version.txt');
   $time_since = time()-$last_check;
@@ -401,7 +399,7 @@ function check_update()
   {
     // Files to compare
     $local_version_file     = fopen('version.txt','r');
-    $current_version_file   = fopen('https://raw.github.com/Cakebox/Cakebox/master/version.txt','r');
+    $current_version_file   = fopen('https://raw.github.com/myxomatom/CakeboxM/master/version.txt','r');
 
     // Num of versions
     $local_version    = fgets($local_version_file);
@@ -421,7 +419,6 @@ function check_update()
 
   } else return array();
 
-  */
 }
 
 /*

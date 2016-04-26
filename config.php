@@ -7,7 +7,7 @@
   define('DISPLAY_HIDDEN_FILESDIRS', FALSE);   // Affiche ou ignore les fichiers cachés
   define('IGNORE_CHMOD', FALSE);               // Active ou ignore la vérification des CHMOD sur /data et /downloads
   define('LOCAL_DL_PATH', 'downloads');        // Modifie le dossier que surveille Cakebox
-  define('DOWNLOAD_LINK', "http://".$identity_inLink);  // Modifie l'URL de stream des fichiers
+  define('DOWNLOAD_LINK', "http://".$identity_inLink."/stock/");  // Modifie l'URL de stream des fichiers
   $excludeFiles = array(".", "..", ".htaccess", "");  // Liste des fichiers ignorés dans le listing de Cakebox
   define('SEEN_SPAN', '<span style="border-bottom:2px dotted #fb0000;">');// Modifie le style du module vu/non vu
   /* Options Divx Web Player*/
