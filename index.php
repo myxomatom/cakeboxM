@@ -1,5 +1,4 @@
 <?php
-include("inc/test-charset.php");
 require_once('inc/lang.inc.php');
 require_once('inc/functions.inc.php');
 
@@ -12,7 +11,7 @@ if(isset($_POST['delete']))
 {
 	foreach($_POST['Files'] as $file)
 	{
-		$file_enc = mb_convert_encoding($file , INTERNAL_ENCODE , FS_ENCODE);
+		$file_enc = iconv(FS_ENCODE, INTERNAL_ENCODE, $file );
 		if(is_dir(LOCAL_DL_PATH.'/'.$file_enc)) 
 		{
 				@rrmdir(LOCAL_DL_PATH.'/'.$file);
@@ -26,9 +25,9 @@ if(isset($_POST['move']))
 {
 	foreach($_POST['Files'] as $file)
 	{
-		$file_enc = mb_convert_encoding($file , INTERNAL_ENCODE , FS_ENCODE);
+		$file_enc = iconv(FS_ENCODE, INTERNAL_ENCODE, $file );
 		$dest_file = $_POST['moveSelect']."/".basename($file);
-		$dest_file_enc = mb_convert_encoding($dest_file , INTERNAL_ENCODE , FS_ENCODE);
+		$dest_file_enc = iconv(FS_ENCODE, INTERNAL_ENCODE, $dest_file );
 		// On rajoute "/downloads" devant le nom des dossiers
 		if(is_dir(LOCAL_DL_PATH.'/'.$file_enc)) $file_enc = LOCAL_DL_PATH.'/'.$file_enc;
 		@rename($file_enc,$dest_file_enc);
@@ -46,13 +45,13 @@ if(isset($_POST['rename']))
 	{
 		if ($new_names[$i] != "")
 		{
-			$file_enc = mb_convert_encoding($file , INTERNAL_ENCODE , FS_ENCODE);
+			$file_enc = iconv(FS_ENCODE, INTERNAL_ENCODE, $file );
 			// On rajoute "/downloads" devant le nom des dossiers
 			if(is_dir(LOCAL_DL_PATH.'/'.$file_enc))  $file = LOCAL_DL_PATH.'/'.$file;
 			$dirname = @pathinfo($file, PATHINFO_DIRNAME) . '/';
 			$newname = $dirname . $new_names[$i];
-			$file = mb_convert_encoding($file ,INTERNAL_ENCODE , FS_ENCODE);
-			$newname = mb_convert_encoding($newname , INTERNAL_ENCODE , FS_ENCODE);
+			$file = iconv(FS_ENCODE, INTERNAL_ENCODE, $file );
+			$newname = iconv(FS_ENCODE, INTERNAL_ENCODE, $newname );
 			@rename($file,$newname);
 		}
 		$i++;		
@@ -62,8 +61,8 @@ if(isset($_POST['rename']))
 // Request : CREATE DIR
 if(isset($_POST['mkdir']) && !empty($_POST['mkdir_name']))
 {
-	$dirSelect = mb_convert_encoding($_POST['mkdirSelect'] , INTERNAL_ENCODE , FS_ENCODE);
-	$dirName = mb_convert_encoding($_POST['mkdir_name'] , INTERNAL_ENCODE , FS_ENCODE);
+	$dirSelect = iconv(FS_ENCODE, INTERNAL_ENCODE , $_POST['mkdirSelect']);
+	$dirName = iconv(FS_ENCODE, INTERNAL_ENCODE, $_POST['mkdir_name']);
 	mkdir($dirSelect."/".$dirName,0777);
 }
 
@@ -172,7 +171,7 @@ if(isset($_GET['ignore_update']))
 					<select name="mkdirSelect">
 						<option value="<?php echo LOCAL_DL_PATH; ?>">/</option>
 						<?php foreach($listof_dir as $dir) { 
-							$dir = mb_convert_encoding($dir, FS_ENCODE);
+							$dir = iconv(INTERNAL_ENCODE, FS_ENCODE, $dir );
 							echo '<option value="'.$dir.'">'.ustr_replace(LOCAL_DL_PATH,"",$dir).'</option>'; } ?>
 					</select>
 					<input type="text" value="<?php echo $lang[LOCAL_LANG]['name_new_dir'];?>" onblur="if(this.value=='') this.value='<?php echo $lang[LOCAL_LANG]['name_new_dir'];?>'" onclick="if(this.value=='<?php echo $lang[LOCAL_LANG]['name_new_dir'];?>') this.value='';" name="mkdir_name"/>
@@ -186,7 +185,7 @@ if(isset($_GET['ignore_update']))
 					<select name="moveSelect">
 						<option value="<?php echo LOCAL_DL_PATH; ?>">/</option>
 						<?php foreach($listof_dir as $dir)
-							{	$dir = mb_convert_encoding($dir, FS_ENCODE);
+							{	$dir = iconv(INTERNAL_ENCODE, FS_ENCODE, $dir );
 						  echo '<option value="'.$dir.'">'.ustr_replace(LOCAL_DL_PATH,"",$dir).'</option>'; } ?>
 					</select>
 					<input type="submit" value="<?php echo $lang[LOCAL_LANG]['move_dir_button']; ?>" name="move"/>

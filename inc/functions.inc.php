@@ -39,13 +39,15 @@ if (!file_exists("config.php"))
   define('DOWNLOAD_LINK', "http://".$identity_inLink."/stock/");  // Modifie l'URL de stream des fichiers
   $excludeFiles = array(".", "..", ".htaccess", "");  // Liste des fichiers ignorés dans le listing de Cakebox
   define('SEEN_SPAN', '<span style="border-bottom:2px dotted #fb0000;">');// Modifie le style du module vu/non vu
+  define('INTERNAL_ENCODE', iconv_get_encoding("internal_encoding")); // Système d'encodage de caractères utilisé par PHP
+  define('FS_ENCODE', 'UTF-8');                // Choix du système d'encodage du système de fichier
   /* Options Divx Web Player*/
-  define('USE_DIVX', TRUE);                            // On choisi le lecteur DivX Web Player par défaut
-  define('DIVX_AUTOPLAY', 'TRUE');                    // Option autoplay (démarrage de la lecture automatique)
-  define('DIVX_WIDTH', '1000');                        // Option de la largeur
-  define('DIVX_HEIGTH', '600');                       // Option de la hauteur
-  define('LAST_ADD', TRUE);                               // Affiche l'icone NEW
-  define('TIME_LAST_ADD', '120');                           // Durée de la nouveauté (en heure)
+  define('USE_DIVX', TRUE);                    // On choisi le lecteur DivX Web Player par défaut
+  define('DIVX_AUTOPLAY', 'TRUE');             // Option autoplay (démarrage de la lecture automatique)
+  define('DIVX_WIDTH', '1000');                // Option de la largeur
+  define('DIVX_HEIGTH', '600');                // Option de la hauteur
+  define('LAST_ADD', TRUE);                    // Affiche l'icone NEW
+  define('TIME_LAST_ADD', '120');              // Durée de la nouveauté (en heure)
 }
 // Surcharge la configuration
 else
@@ -70,7 +72,7 @@ function isVideoFile($path)
  */
 function get_file_icon($filename)
 {
-  $filename = mb_convert_encoding($filename , INTERNAL_ENCODE , FS_ENCODE );
+  $filename = iconv(FS_ENCODE ,INTERNAL_ENCODE . "//IGNORE" , $filename );
   $extension = pathinfo($filename, PATHINFO_EXTENSION);
 
   if($extension == "avi" || $extension == "mpeg" || $extension == "mp4" || $extension == "AVI" || $extension == "mkv") $extension = "avi";
@@ -87,7 +89,7 @@ function get_file_icon($filename)
  */
 function getFileSize($filePath)
 {
-   // $filePath = mb_convert_encoding($filePath , INTERNAL_ENCODE , FS_ENCODE );
+
      $fs = filesize($filePath);
 
      if ($fs >= 1073741824)
@@ -108,13 +110,12 @@ function getFileSize($filePath)
  **/
 function showLastAdd($file)
 {
-   // $file = mb_convert_encoding($file , INTERNAL_ENCODE , FS_ENCODE );
+   
     if ( LAST_ADD && ((date('U') - filemtime($file)) / 3600) <= TIME_LAST_ADD)
        echo '<img src="ressources/new.png" title="Nouveau fichier !" /> &nbsp;';
 }
 function showLastAddFolder($key)
 {
-  //$key = mb_convert_encoding($key , INTERNAL_ENCODE , FS_ENCODE );
   $stat = stat($key);
   if (LAST_ADD && ((date('U') - $stat['mtime']) / 3600) <= TIME_LAST_ADD)
     return 'folder_new.png';
@@ -146,7 +147,7 @@ function recursive_directory_tree($directory = null)
         //Scan the directory and loop through the results
         foreach(scandir($directory) as $file) {
             
-            $file = mb_convert_encoding($file  , FS_ENCODE, INTERNAL_ENCODE );
+            $file = iconv(INTERNAL_ENCODE ,FS_ENCODE , $file );
 
             //. = current directory, .. = up one level. We want to ignore both.
             if ($file[0] == "." && !DISPLAY_HIDDEN_FILESDIRS) {
@@ -161,10 +162,9 @@ function recursive_directory_tree($directory = null)
             //Check if the current $file is a directory itself.
             //The appending of $directory is necessary here.
 
-            $file = mb_convert_encoding($file , INTERNAL_ENCODE , FS_ENCODE );
+            $file = iconv(FS_ENCODE , INTERNAL_ENCODE, $file );
             if (is_dir($directory."/".$file))
             {
-                //$file = mb_convert_encoding($file , FS_ENCODE , INTERNAL_ENCODE  );
                 //Create a new array with an index of the folder name.
                 $return[$directory."/".$file] = recursive_directory_tree($directory."/".$file);
             }
@@ -211,7 +211,7 @@ function print_tree_structure($treestructure, $editmode = FALSE, $father = "")
     {
 
       $fullkey = $key;
-      $key = mb_convert_encoding($key , FS_ENCODE , INTERNAL_ENCODE  );
+      $key = iconv(INTERNAL_ENCODE ,FS_ENCODE , $key );
       $key = addslashes(basename($key));
       $dir = dirname($fullkey);
       echo '<div class="onedir">';
@@ -230,8 +230,8 @@ function print_tree_structure($treestructure, $editmode = FALSE, $father = "")
     else
     {
       $pathInfo = pathinfo($file);
-      $file_enc = mb_convert_encoding($file , FS_ENCODE , INTERNAL_ENCODE);
-      $path_enc = mb_convert_encoding($pathInfo['basename'] , FS_ENCODE , INTERNAL_ENCODE);
+      $file_enc = iconv(INTERNAL_ENCODE ,FS_ENCODE , $file );
+      $path_enc = iconv(INTERNAL_ENCODE ,FS_ENCODE , $pathInfo['basename'] );
 
       echo '<div style="margin-bottom:5px;" class="onefile" id="div-'.$file_enc.'">';
 
@@ -256,7 +256,7 @@ function print_tree_structure($treestructure, $editmode = FALSE, $father = "")
 	      echo '</span>';
       }
       else
-          $file_conv = mb_convert_encoding($file , FS_ENCODE , INTERNAL_ENCODE );
+          $file_conv = iconv(INTERNAL_ENCODE ,FS_ENCODE , $file );
           echo basename($file_conv);
           
 
@@ -283,7 +283,7 @@ function print_tree_structure($treestructure, $editmode = FALSE, $father = "")
  function rrmdir($dir)
  {
 
-    $dir_enc = mb_convert_encoding($dir , INTERNAL_ENCODE , FS_ENCODE);
+    $dir_enc = iconv(FS_ENCODE , INTERNAL_ENCODE, $dir );
       if (is_dir($dir_enc)) 
       {
         $objects = scandir($dir_enc);
@@ -291,7 +291,7 @@ function print_tree_structure($treestructure, $editmode = FALSE, $father = "")
         {
           if ($object != "." && $object != "..") 
           {
-            $obj_enc = mb_convert_encoding($object , INTERNAL_ENCODE , FS_ENCODE);
+            $obj_enc = iconv(FS_ENCODE , INTERNAL_ENCODE, $object );
             if (filetype($dir_enc."/".$obj_enc) == "dir") rrmdir($dir_enc."/".$obj_enc); else unlink($dir_enc."/".$object_enc);
           }
         }
