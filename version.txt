@@ -1,5 +1,2 @@
-1.1
-Ajout de la fonction permettant de renommer les fichiers et dossiers
-Modification permettant la gestion des fichiers et dossiers contenant des caracteres speciaux
-ATTENTION LE SYSTEME DE MISE A JOUR AUTO N EST PAS ENCORE FONCTIONNEL
-VEUILLEZ FAIRE LA MISE A JOUR EN FAISANT UN GIT CLONE
+1.2
+Remise en service de la mise a jour automatique

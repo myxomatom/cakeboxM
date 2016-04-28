@@ -464,12 +464,7 @@ function do_update($force)
   // We must be sure there is an update available
   if(check_update() || $force)
   {
-
-    // Extract "/dir/of/web/server" from "/dir/of/web/server/cakebox"
-    $update_dir = escapeshellarg(substr(getcwd(),0,strpos(getcwd(),"/cakeboxM")));
-    echo($update_dir);
-    //exec("bash scripts/patch_update $update_dir");
-    exec("git fetch");
+    update_all_files();
     sleep(1); // let time before redirection
     header('Location:index.php?update_done');
 
@@ -497,6 +492,29 @@ function detect_OS()
   $ua = $_SERVER["HTTP_USER_AGENT"];
   if(strpos($ua, 'Macintosh')) return "OSX";
   else return "Linux-Windows-others";
+}
+
+function update_all_files()
+{
+    $update_file   = fopen('update/files.txt','r');
+      while(!feof($update_file))
+      {
+        $files_to_update[] = fgets($update_file) . "\r\n";
+      }
+
+    
+    foreach ($files_to_update as $file) 
+    {
+      $file = trim(preg_replace('/\s+/', ' ', $file));
+      $source_file   = fopen('https://raw.github.com/myxomatom/CakeboxM/master/'.$file,'r');
+      //$contenu[] = file_get_contents($source_file);
+      while(!feof($source_file))
+      {
+        $contenu[] = fgets($source_file);
+      }
+      file_put_contents($file, $contenu);
+      $contenu = NULL;  
+    }
 }
 
 ?>
