@@ -72,7 +72,7 @@ function isVideoFile($path)
  */
 function get_file_icon($filename)
 {
-  $filename = iconv(FS_ENCODE ,INTERNAL_ENCODE . "//IGNORE" , $filename );
+  $filename = @iconv(INTERNAL_ENCODE ,FS_ENCODE , $filename );
   $extension = pathinfo($filename, PATHINFO_EXTENSION);
 
   if($extension == "avi" || $extension == "mpeg" || $extension == "mp4" || $extension == "AVI" || $extension == "mkv") $extension = "avi";
@@ -239,7 +239,8 @@ function print_tree_structure($treestructure, $editmode = FALSE, $father = "")
       if($editmode) echo '<input name="Files[]" id="Files" type="checkbox" value="'.$file_enc.'"/>';
 
       // Affichage des images à gauche du titre (Direct Download + Watch)
-      echo '<a href="'.DOWNLOAD_LINK.$file_enc.'" download="'.$pathInfo['basename'].'">';
+      $pathInfo_conv = iconv(INTERNAL_ENCODE, FS_ENCODE, $pathInfo['basename']);
+      echo '<a href="'.DOWNLOAD_LINK.$file_enc.'" download="'.$pathInfo_conv.'">';
         echo '<img src="ressources/download.png" title="Download this file" /> &nbsp;';
       echo '</a>';
 

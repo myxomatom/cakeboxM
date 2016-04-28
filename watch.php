@@ -1,5 +1,5 @@
 <?php
-include("inc/test-charset.php");
+setlocale(LC_ALL, 'fr_FR.UTF-8');
 require('inc/lang.inc.php');
 require('inc/functions.inc.php');
 

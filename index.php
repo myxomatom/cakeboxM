@@ -1,4 +1,5 @@
 <?php
+setlocale(LC_ALL, 'fr_FR.UTF-8');
 require_once('inc/lang.inc.php');
 require_once('inc/functions.inc.php');
 
